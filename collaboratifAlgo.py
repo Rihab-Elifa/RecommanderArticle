@@ -10,17 +10,25 @@ from fastapi import FastAPI
 app = FastAPI()
 
 class ratings(BaseModel):
-    UserId: str
-    ProductId: str
-    Rating: int
+    NumR: int
+    u: str
+    a: str
+   
+class History(BaseModel):
+    id: str
 class RequestBody(BaseModel):
-    amazon_ratings: List[ratings]
+   ratings: List[ratings]
+   hp: List[History]
+   
+class ResponseBody(BaseModel):
+    recommended_products: List[str]
 
-@app.post("/recommend_products")
+@app.post("/recommend")
 def recommend_products(request: RequestBody):
-    amazon_ratings=request.amazon_ratings
+    ratings=request.ratings
+    hp=request.hp
     #Utility Matrix based on products sold and user reviews
-    ratings_utility_matrix = amazon_ratings.pivot_table(values='Rating', index='UserId', columns='ProductId', fill_value=0)
+    ratings_utility_matrix = ratings.pivot_table(values='NumR', index='u', columns='a', fill_value=0)
     ratings_utility_matrix.head()
     X = ratings_utility_matrix.T
     X1 = X
@@ -33,11 +41,11 @@ def recommend_products(request: RequestBody):
     correlation_matrix.shape
 
     #Isolating Product ID # 6117036094 from the Correlation Matrix
-    X.index[1]
+    #X.index[1]
     
 
     product_names = list(X.index)
-    product_ID = product_names.index(i)
+    product_ID = product_names.index(hp.index[1])
     product_ID
     correlation_product_ID = correlation_matrix[product_ID]
     correlation_product_ID.shape

@@ -48,7 +48,7 @@ def recommend_products(request: RequestBody):
     recommendation_scores = uni_sim[history_indices].sum(axis=0)
 
     # Sort the recommendation scores in descending order
-    sorted_indices = recommendation_scores.argsort()[::-1]
+    sorted_indices = recommendation_scores.argsort()[::-1][1:6]
 
     # Retrieve the recommended products based on the sorted indices
     recommended_products = recommend_articles(products, sorted_indices)
